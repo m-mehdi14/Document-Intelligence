@@ -139,8 +139,5 @@ Naqi-Demo-project/
 - **Data location**: Documents and index stay under `sample_docs/` and `data/` on your machine.
 - For production: add RBAC, AD/LDAP, audit logging, and document-level permissions as in the full proposal.
 
-## Prepared For
 
-MOL Group — Enterprise Data, Mining Operations & Knowledge Management Teams  
-
-**Prepared By**: Muhammad Mehdi / Decentrasec
+**Prepared By**: Muhammad Mehdi
