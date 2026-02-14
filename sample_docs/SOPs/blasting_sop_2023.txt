@@ -1,0 +1,38 @@
+STANDARD OPERATING PROCEDURE — BLASTING OPERATIONS
+Document: SOP-BLAST-001
+Version: 2.1
+Last updated: 2023-06-20
+Department: Mining Operations
+
+1. SCOPE
+This SOP applies to all blasting activities at MOL Group mining sites. All personnel involved in blast design, charging, or initiation must be trained and authorized.
+
+2. PREREQUISITES
+- Valid blasting permit and site-specific risk assessment.
+- Blasting SOPs updated after 2022 must be used; earlier versions are obsolete.
+- Pre-blast inspection of area and exclusion zone.
+
+3. PROCEDURE
+3.1 Design
+- Blast design must be approved by site engineer.
+- Maximum charge per delay and total charge limits as per local regulations.
+
+3.2 Charging
+- Only authorized personnel in charging area.
+- Use designated explosives and initiation system.
+- Record batch and lot numbers.
+
+3.3 Initiation
+- Clear exclusion zone; all personnel accounted for.
+- Sound warning signals before blast.
+- Post-blast inspection before re-entry.
+
+4. RECORDS
+- Blast log (time, location, design, results) to be retained for 7 years.
+- Any incident must be reported within 24 hours.
+
+5. REFERENCES
+- Mine Safety Handbook, Section 4
+- Environmental impact report for Project X (blasting chapter)
+
+For blasting SOPs updated after 2022, always refer to this document (v2.1, 2023).

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MOL Document Intelligence — On-Prem Search &amp; Q&A</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+            mono: ['IBM Plex Mono', 'monospace'],
+          },
+          colors: {
+            surface: {
+              DEFAULT: '#1e293b',
+              hover: '#334155',
+              border: '#475569',
+            },
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    .loading-dots::after { content: ''; animation: loading-dots 1.4s steps(4, end) infinite; }
+    @keyframes loading-dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+    @keyframes messageIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .message-in { animation: messageIn 0.3s ease; }
+    .bounce-delay-1 { animation-delay: 0.1s; }
+    .bounce-delay-2 { animation-delay: 0.2s; }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 font-sans antialiased">
+  <!-- Hidden: Tailwind CDN compiles these classes for JS-injected content -->
+  <div id="tailwind-safelist" class="hidden">
+    <div class="message-in mb-6"><div class="mb-1 text-xs font-semibold uppercase tracking-wider text-sky-400"></div><div class="max-w-[85%] rounded-xl border border-slate-700 bg-slate-800 p-4 text-[15px] leading-relaxed whitespace-pre-wrap break-words"></div></div>
+    <div class="message-in mb-6"><div class="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500"></div><div class="rounded-xl border border-slate-700 border-l-4 border-l-sky-500 bg-slate-800 p-4 text-[15px] leading-relaxed shadow-lg whitespace-pre-wrap break-words"><span class="inline-flex mb-2 rounded px-2 py-1 text-xs font-semibold uppercase tracking-wide bg-sky-500/15 text-sky-400"></span></div><div class="mt-4 border-t border-slate-700 pt-4"><div class="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500"></div><div class="border-b border-slate-700/80 py-2.5 text-sm text-slate-400 last:border-0"><span class="font-semibold text-slate-200"></span><span class="ml-1 text-[11px] text-slate-500"></span><div class="font-mono mt-1 break-all text-xs text-slate-500"></div></div></div></div>
+    <div class="mb-6"><div class="flex items-center gap-2 p-4 text-sm text-slate-400"><span class="flex gap-1"><span class="h-1.5 w-1.5 rounded-full bg-sky-500 animate-bounce"></span><span class="h-1.5 w-1.5 rounded-full bg-sky-500 animate-bounce bounce-delay-1"></span><span class="h-1.5 w-1.5 rounded-full bg-sky-500 animate-bounce bounce-delay-2"></span></span></div></div>
+    <div class="rounded-xl border border-slate-700 border-l-4 border-l-red-500 bg-red-500/10 p-4 text-red-400"></div>
+  </div>
+
+  <div class="flex flex-col min-h-screen max-w-4xl mx-auto">
+    <!-- Header -->
+    <header class="shrink-0 px-4 py-4 sm:px-6 bg-slate-900/90 border-b border-slate-700/60">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/15 text-sky-400" aria-hidden="true">
+            <svg class="h-6 w-6" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round">
+              <path d="M14 4L4 8v12l10 4 10-4V8L14 4z"/>
+              <path d="M4 8l10 4 10-4M14 12v12" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <div class="flex flex-col">
+            <span class="font-bold text-sm sm:text-base tracking-tight">MOL Document Intelligence</span>
+            <span class="text-xs text-slate-500">Knowledge retrieval platform</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-400" title="All processing on your infrastructure">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            On-Prem · Secure
+          </span>
+          <select id="filter-folder" class="rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" title="Filter by folder">
+            <option value="">All folders</option>
+          </select>
+          <select id="filter-doctype" class="rounded-lg border border-slate-600 bg-slate-800 px-3 py-2 text-sm text-slate-200 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" title="Filter by document type">
+            <option value="">All types</option>
+          </select>
+          <button type="button" id="btn-reindex" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-600 bg-transparent px-3 py-2 text-sm font-medium text-slate-300 transition hover:border-slate-500 hover:bg-slate-800" title="Re-index documents">
+            <span class="opacity-80">↻</span> Re-index
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex flex-1 flex-col min-h-0">
+      <section class="flex flex-1 flex-col p-4 sm:p-6 min-h-0" aria-label="Document Q&A">
+        <div id="chat-messages" class="flex-1 overflow-y-auto pb-4 scroll-smooth">
+          <!-- Welcome -->
+          <div id="welcome" class="max-w-2xl rounded-xl border border-slate-700/80 bg-slate-800/50 p-6 sm:p-8">
+            <div class="mb-6">
+              <h1 class="mb-2 text-xl font-bold tracking-tight sm:text-2xl text-slate-100">Ask your documents in plain English</h1>
+              <p class="text-sm text-slate-400 leading-relaxed">Search and get answers from internal documents with source citations. Data stays on your infrastructure.</p>
+            </div>
+            <div class="mb-5">
+              <span class="mb-2 block text-xs font-semibold uppercase tracking-wider text-slate-500">Try asking:</span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="chip rounded-full border border-slate-600 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-400 transition hover:border-sky-500 hover:bg-slate-800 hover:text-sky-400" data-query="Show the latest mine safety inspection report for Site A">Latest mine safety report — Site A</button>
+                <button type="button" class="chip rounded-full border border-slate-600 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-400 transition hover:border-sky-500 hover:bg-slate-800 hover:text-sky-400" data-query="Find blasting SOPs updated after 2022">Blasting SOPs after 2022</button>
+                <button type="button" class="chip rounded-full border border-slate-600 bg-slate-800/60 px-4 py-2.5 text-sm text-slate-400 transition hover:border-sky-500 hover:bg-slate-800 hover:text-sky-400" data-query="What were the key findings in the environmental impact report for Project X?">Environmental impact — Project X</button>
+              </div>
+            </div>
+            <p class="border-t border-slate-700/80 pt-4 text-xs text-slate-500">Answers are generated from indexed documents only. Each response includes exact file and page references.</p>
+          </div>
+        </div>
+
+        <!-- Input -->
+        <div class="shrink-0 border-t border-slate-700/80 pt-4">
+          <form id="chat-form" class="chat-form">
+            <div class="flex gap-2 rounded-xl border border-slate-600 bg-slate-800/80 p-2 transition focus-within:border-sky-500 focus-within:ring-2 focus-within:ring-sky-500/20">
+              <textarea id="query-input" class="query-input min-h-[44px] max-h-36 flex-1 resize-none rounded-lg bg-transparent px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none" rows="1" placeholder="Ask a question about your documents…" required></textarea>
+              <button type="submit" id="btn-submit" class="btn-send inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-sky-500 px-4 font-medium text-white transition hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed" title="Send">
+                <span class="btn-send-text sm:hidden">Send</span>
+                <span class="btn-send-arrow hidden sm:inline">→</span>
+              </button>
+            </div>
+            <p class="mt-1.5 text-[11px] text-slate-500">Press Enter to send, Shift+Enter for new line</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="shrink-0 border-t border-slate-700/80 px-4 py-3 sm:px-6 bg-slate-900/50">
+      <div class="text-xs text-slate-500">
+        <span>MOL Group</span><span class="mx-1.5 opacity-60">·</span><span>On-Prem RAG Demo</span><span class="mx-1.5 opacity-60">·</span><span>Data never leaves your infrastructure</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

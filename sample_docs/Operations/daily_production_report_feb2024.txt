@@ -1,0 +1,19 @@
+DAILY PRODUCTION REPORT — MINING OPERATIONS
+Report date: 2024-02-14
+Site: Combined (Sites A & B)
+
+PRODUCTION SUMMARY
+- Ore mined (tonnes): 4,220
+- Waste moved (tonnes): 12,100
+- Crushing throughput: 3,980 tonnes
+
+EQUIPMENT AVAILABILITY
+- Haul trucks: 92%
+- Excavators: 88%
+- Drill rigs: 100%
+
+NOTES
+- Short delay on North face due to weather; resumed by 11:00.
+- Maintenance completed on conveyor C-2 as planned.
+
+This is a sample internal operations report. Historical records are stored in the shared drive under Operations/Reports.
